@@ -1,0 +1,36 @@
+NavBar.js
+
+<MDBNavbarBrand href='http://35.154.181.120:3000/'>PIZZATERIA</MDBNavbarBrand>
+
+<a href='http://35.154.181.120:3000/cart' className='btn btn-secondary' bgColor=''>
+
+                <MDBNavbarLink aria-current='page' href='http://35.154.181.120:3000/'>
+                  Home
+                </MDBNavbarLink>
+
+ <MDBNavbarItem>
+                <MDBNavbarLink href='http://35.154.181.120:3000/aboutus'>About</MDBNavbarLink>
+              </MDBNavbarItem>
+
+
+ <MDBNavbarItem>
+                <MDBNavbarLink href='http://35.154.181.120:3000/contactus'>Contact Us</MDBNavbarLink>
+              </MDBNavbarItem>
+
+
+
+
+
+
+AddAddress.js
+
+window.location.href = 'http://35.154.181.120:3000/shipping'
+
+window.location.href = 'http://35.154.181.120:3000/shipping'
+
+
+Register.js
+
+<a href='http://35.154.181.120:3000/login'>Login</a>
+
+
