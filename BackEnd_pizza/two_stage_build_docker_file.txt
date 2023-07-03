@@ -1,0 +1,12 @@
+# Stage 1: Build stage
+FROM openjdk:11 AS build
+WORKDIR /app
+COPY target/*.war /app/app.war
+
+# Stage 2: Runtime stage
+FROM openjdk:11
+WORKDIR /opt
+ENV PORT 8080
+EXPOSE 8080
+COPY --from=build /app/app.war /opt/app.war
+ENTRYPOINT exec java $JAVA_OPTS -jar app.war

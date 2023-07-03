@@ -1,0 +1,149 @@
+mysql> show tables;
++---------------------------------+
+| Tables_in_originalpizzadelivery |
++---------------------------------+
+| address                         |
+| cart_items                      |
+| carts                           |
+| categories                      |
+| offers                          |
+| order_items                     |
+| orders                          |
+| pizzas                          |
+| reviews                         |
+| users                           |
++---------------------------------+
+10 rows in set (0.14 sec)
+
+mysql> desc address;
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| id       | bigint      | NO   | PRI | NULL    | auto_increment |
+| city     | varchar(25) | YES  |     | NULL    |                |
+| country  | varchar(25) | YES  |     | NULL    |                |
+| house_no | varchar(10) | YES  |     | NULL    |                |
+| pincode  | varchar(10) | YES  |     | NULL    |                |
+| state    | varchar(25) | YES  |     | NULL    |                |
+| street   | varchar(50) | YES  |     | NULL    |                |
+| user_id  | bigint      | NO   | MUL | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
+8 rows in set (0.17 sec)
+
+mysql> desc cart_items;
++-------------+--------+------+-----+---------+----------------+
+| Field       | Type   | Null | Key | Default | Extra          |
++-------------+--------+------+-----+---------+----------------+
+| id          | bigint | NO   | PRI | NULL    | auto_increment |
+| quantity    | int    | NO   |     | NULL    |                |
+| total_price | double | YES  |     | NULL    |                |
+| cart_id     | bigint | NO   | MUL | NULL    |                |
+| pizza_id    | bigint | YES  | MUL | NULL    |                |
++-------------+--------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc carts;
++------------------+--------+------+-----+---------+----------------+
+| Field            | Type   | Null | Key | Default | Extra          |
++------------------+--------+------+-----+---------+----------------+
+| id               | bigint | NO   | PRI | NULL    | auto_increment |
+| created_on       | date   | YES  |     | NULL    |                |
+| last_updated_on  | date   | YES  |     | NULL    |                |
+| total_cart_price | double | YES  |     | NULL    |                |
+| total_items      | int    | YES  |     | NULL    |                |
+| user_id          | bigint | NO   | MUL | NULL    |                |
++------------------+--------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc categories;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | bigint       | NO   | PRI | NULL    | auto_increment |
+| category_name | varchar(30)  | YES  | UNI | NULL    |                |
+| description   | varchar(100) | YES  |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc offers;
++------------------+---------------+------+-----+---------+----------------+
+| Field            | Type          | Null | Key | Default | Extra          |
++------------------+---------------+------+-----+---------+----------------+
+| id               | bigint        | NO   | PRI | NULL    | auto_increment |
+| code             | varchar(50)   | YES  | UNI | NULL    |                |
+| discount         | int           | NO   |     | NULL    |                |
+| name             | varchar(255)  | YES  |     | NULL    |                |
+| terms_conditions | varchar(1000) | YES  |     | NULL    |                |
+| valid_from       | datetime(6)   | YES  |     | NULL    |                |
+| valid_upto       | datetime(6)   | YES  |     | NULL    |                |
++------------------+---------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> desc order_items;
++-------------+--------+------+-----+---------+----------------+
+| Field       | Type   | Null | Key | Default | Extra          |
++-------------+--------+------+-----+---------+----------------+
+| id          | bigint | NO   | PRI | NULL    | auto_increment |
+| quantity    | int    | NO   |     | NULL    |                |
+| total_price | double | YES  |     | NULL    |                |
+| order_id    | bigint | NO   | MUL | NULL    |                |
+| pizza_id    | bigint | YES  | MUL | NULL    |                |
++-------------+--------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc orders;
++------------------+--------------+------+-----+---------+----------------+
+| Field            | Type         | Null | Key | Default | Extra          |
++------------------+--------------+------+-----+---------+----------------+
+| id               | bigint       | NO   | PRI | NULL    | auto_increment |
+| created_on       | date         | YES  |     | NULL    |                |
+| placed_on        | date         | YES  |     | NULL    |                |
+| delivery_status  | varchar(255) | YES  |     | NULL    |                |
+| total_items      | int          | YES  |     | NULL    |                |
+| total_cart_price | double       | YES  |     | NULL    |                |
+| address_id       | bigint       | YES  | MUL | NULL    |                |
+| user_id          | bigint       | NO   | MUL | NULL    |                |
++------------------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> desc pizzas;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | bigint       | NO   | PRI | NULL    | auto_increment |
+| avg_rating  | float        | NO   |     | NULL    |                |
+| in_stock    | bit(1)       | YES  |     | NULL    |                |
+| is_veg      | bit(1)       | YES  |     | NULL    |                |
+| name        | varchar(255) | YES  |     | NULL    |                |
+| price       | double       | NO   |     | NULL    |                |
+| summary     | varchar(255) | YES  |     | NULL    |                |
+| category_id | bigint       | YES  | MUL | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> desc reviews;
++-----------+---------------+------+-----+---------+----------------+
+| Field     | Type          | Null | Key | Default | Extra          |
++-----------+---------------+------+-----+---------+----------------+
+| id        | bigint        | NO   | PRI | NULL    | auto_increment |
+| posted_on | date          | YES  |     | NULL    |                |
+| rating    | float         | NO   |     | NULL    |                |
+| review    | varchar(1000) | YES  |     | NULL    |                |
+| pizza_id  | bigint        | NO   | MUL | NULL    |                |
+| user_id   | bigint        | NO   | MUL | NULL    |                |
++-----------+---------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc users;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | bigint      | NO   | PRI | NULL    | auto_increment |
+| email      | varchar(50) | YES  | UNI | NULL    |                |
+| first_name | varchar(20) | YES  |     | NULL    |                |
+| last_name  | varchar(50) | YES  |     | NULL    |                |
+| mobile_no  | varchar(10) | YES  | UNI | NULL    |                |
+| password   | varchar(50) | NO   |     | NULL    |                |
+| user_role  | varchar(30) | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)

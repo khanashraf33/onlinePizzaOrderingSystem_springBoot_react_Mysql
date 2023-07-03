@@ -1,0 +1,422 @@
+in this deployment i used two instance
+ 
+first instance : it contain mysql and springboot app
+
+to create springsnapshort (BookMyFlight-0.0.1-SNAPSHOT) file, we only want to do maven install then a zip file is create in target folder
+
+we also need to add Docker file in parallel to our project
+//////////////////////////////////////////////////////////////////////////////
+Dockerfile
+//////////////////////////////////////////////////////////////////////////////
+FROM openjdk:11
+WORKDIR /opt
+ENV PORT 8080
+EXPOSE 8080
+COPY target/*.war /opt/app.war
+ENTRYPOINT exec java $JAVA_OPTS -jar app.war
+//////////////////////////////////////////////////////////////////////////////
+
+our spring boot file is under BackEnd_pizza folder
+docker-compose.yml is in parallel to BackEnd_pizza folder
+it is because docker-compose.yml contain build: ./BackEnd_pizza
+
+contain docker compose file 
+
+//////////////////////////////////////////////////////////////////////////////
+docker-compose.yml
+//////////////////////////////////////////////////////////////////////////////
+version: '3.8'
+
+services:
+  app:
+    build: ./BackEnd_pizza
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/latestpizza?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: D2_ashraf_69847
+      SPRING_DATASOURCE_PASSWORD: sunbeam
+    restart: always
+    depends_on:
+      - db
+    
+  db:
+    image: mysql:8.0.27
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: latestpizza
+      MYSQL_USER: D2_ashraf_69847
+      MYSQL_PASSWORD: sunbeam
+    volumes:
+      - ./data:/var/lib/mysql
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////
+we need to compress BackEnd_airline folder and docker-compose.yml and create backend.zip
+///////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+create EC2 first instance
+//step1==> google search aws
+//step2==>then sign in or create new account
+//step3==>click on EC2 dash board
+//step4==>click on instances
+//step5==>to create new instance click on launch instance
+//step6==>name the instance eg-demo-server
+//step7==>then now in quick start session click on ubuntu server
+//step8==>use t2.micro
+//step9==>then click on create new key pair
+//step10==>name the keypair eg-demo-server
+//step11==>click on create new key pair
+//step12==>now on network setting click on both http and https
+//step13==>click on launch instance
+//step14==>view all instance
+//step15==>now prem file will download automatically
+
+either(cmd1) 
+
+
+//  now the perm which is download we cut and paste it on destop
+// after the we run powershell on destop
+//simply by using shift with right key
+//and the write below commands
+
+PS C:\Users\khan Ashraf\Desktop> 
+ssh -i ~/Desktop/demo-docker.pem ubuntu@3.110.77.40
+
+ubuntu@ip-172-31-6-253:~$ 
+sudo apt-get update
+
+
+or 
+
+
+click on instance 
+then on top click on connect
+then on the next page click on connect(cmd1)
+
+ubuntu@ip-172-31-6-253:~$ 
+sudo apt-get update
+
+////////////////////////////////////////////////////////////////////////////////
+/////now open the powershell where the backend zip is located(cmd2)
+/////then write this command to upload the zip to EC2
+
+PS E:\docker_testing> 
+scp -i ~/Desktop/demo-docker.pem backend.zip ubuntu@3.110.77.40:~/
+
+////to check use cmd1 and write ls see it contain backend.zip or not
+
+////now we have to install unzipper
+
+ubuntu@ip-172-31-0-218:~$ 
+sudo apt-get install unzip
+
+/////now unzip it
+
+ubuntu@ip-172-31-0-218:~$ 
+unzip backend.zip
+
+//check unzip is done or not
+
+ubuntu@ip-172-31-0-218:~$ ls
+
+///////////////////////////////////////////////////////////////////////////////
+// now we have to install docker
+// copy paste all beloy command step by step
+
+ sudo apt-get update
+
+ sudo apt-get install ca-certificates curl gnupg
+
+ sudo install -m 0755 -d /etc/apt/keyrings
+
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+ sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+ echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+ sudo apt-get update
+
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+//check if docker is install
+
+ubuntu@ip-172-31-0-218:~$ 
+sudo docker --version
+
+//now install docker compose
+
+sudo apt-get update
+
+//now check if it install or not
+
+ubuntu@ip-172-31-34-214:~$ 
+sudo apt install docker-compose
+
+ubuntu@ip-172-31-0-218:~$ 
+sudo docker-compose --version
+
+//all setup is done
+
+//now simply build then docker-compose up
+
+ubuntu@ip-172-31-6-134:~$ 
+sudo docker-compose build
+
+ubuntu@ip-172-31-6-134:~$ 
+sudo docker-compose up
+
+/////////////////////////////////////////////////////////////////////////////////
+
+to see the two container is running
+//this show the running container
+
+ubuntu@ip-172-31-6-134:~$ 
+sudo docker ps
+
+//this show all the container
+
+ubuntu@ip-172-31-6-134:~$ 
+sudo docker ps -a
+
+//you can stop the container or run the container
+
+sudo docker stop <container-name or id>
+
+sudo docker start <container-name or id>
+
+// to start and see the logs
+
+sudo docker start <container-name or id> && sudo docker logs -f <container-name or id>
+
+//to go inside mysql container
+sudo docker exec -it <container-name or id> bash
+
+mysql -u D2_ashraf_69847 -psunbeam
+
+/////////////////////////////////////////////////////////////////////////////////
+use postman to check the back end is running or not
+
+post request
+http://<IP Address of the instance>:9090/createuser
+http://3.110.77.40:9090/createuser
+
+go in => body => raw => jason
+	{ 
+		"username" : "krati",
+		"fname" : "mahajan",
+		"email" : "krati_mahajan@gmail.com",
+		"phone" : "8898778538",
+		"isadmin" : "0",
+		"password" : "123"
+    }
+
+then click send
+
+get request 
+http://<IP Address of the instance>:9090/get/3
+http://3.110.77.40:9090/get/1
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+FROM node:alpine
+
+WORKDIR /app
+
+COPY ./package.json /app
+
+RUN npm install
+
+COPY . /app
+
+CMD ["npm","start"]
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+second instance : it contain only react application 
+
+first we have change all the request which pass to backend 
+localhost to 3.110.77.40
+
+go into => FrontEnd_airline => src => service => you get three file change all the http address to 3.110.77.40:9090
+
+//now zip the whole folder and create frontend.zip
+///////////////////////////////////////////////////////////////////////////////
+create second instance
+//step1==> google search aws
+//step2==>then sign in or create new account
+//step3==>click on EC2 dash board
+//step4==>click on instances
+//step5==>to create new instance click on launch instance
+//step6==>name the instance eg-demo-server1
+//step7==>then now in quick start session click on ubuntu server
+//step8==>use t2.micro
+//step9==>then click on create new key pair
+//step10==>name the keypair eg-demo-server1
+//step11==>click on create new key pair
+//step12==>now on network setting click on both http and https
+//step13==>click on launch instance
+//step14==>view all instance
+//step15==>now prem file will download automatically
+
+either(cmd1) 
+
+
+//  now the perm which is download we cut and paste it on destop
+// after the we run powershell on destop
+//simply by using shift with right key
+//and the write below commands
+
+PS C:\Users\khan Ashraf\Desktop> 
+ssh -i ~/Desktop/demo-docker1.pem ubuntu@13.234.119.43
+
+ubuntu@ip-172-31-6-253:~$ 
+sudo apt-get update
+
+
+or 
+
+
+click on instance 
+then on top click on connect
+then on the next page click on connect(cmd1)
+
+ubuntu@ip-172-31-6-253:~$ 
+sudo apt-get update
+
+////////////////////////////////////////////////////////////////////////////////
+/////now open the powershell where the backend zip is located(cmd2)
+/////then write this command to upload the zip to EC2
+
+PS E:\docker_testing> 
+scp -i ~/Desktop/demo-docker1.pem frontend.zip ubuntu@13.234.119.43:~/
+
+////to check use cmd1 and write ls see it contain backend.zip or not
+
+////now we have to install unzipper
+
+ubuntu@ip-172-31-0-218:~$ 
+sudo apt-get install unzip
+
+/////now unzip it
+
+ubuntu@ip-172-31-0-218:~$ 
+unzip frontend.zip
+
+//check unzip is done or not
+
+ubuntu@ip-172-31-0-218:~$ ls
+
+///////////////////////////////////////////////////////////////////////////////
+// now we have to install docker
+// copy paste all below command step by step
+
+ sudo apt-get update
+
+ sudo apt-get install ca-certificates curl gnupg
+
+ sudo install -m 0755 -d /etc/apt/keyrings
+
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+ sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+ echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+ sudo apt-get update
+
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
+
+//check if docker is install
+
+ubuntu@ip-172-31-0-218:~$ 
+sudo docker --version
+
+//now we have to create frontend image
+
+sudo docker build -t <image_name_you_want> .
+eg===> ubuntu@ip-172-31-41-13:~$ 
+       sudo docker build -t myapp .
+
+//now create the container
+
+sudo docker run -d --name <container_name_you_want> -p <host_port>:<container_port> <above_image_name>
+eg===> ubuntu@ip-172-31-41-13:~$ 
+       sudo docker run --name mycontainer -p 3000:3000 myapp
+
+//to truble shoot 
+
+sudo docker stop <container-name or id>
+
+sudo docker start <container-name or id>
+
+sudo docker start <container-name or id> && sudo docker logs -f <container-name or id>
+
+//to delete all file in current folder
+sudo rm -rf *
+
+//to delete container
+sudo docker rm <container name or id>
+
+//to delete image name
+sudo docker rmi <image name or image id>
+
+///////////////////////////////////////////////////////////////////////////////
+to change costumer from user to admin
+///////////////////////////////////////////////////////////////////////////////
+
+either 
+
+
+//use powershell right click with holding shift the click on powershell
+//apply this command
+PS C:\Users\khan Ashraf\Desktop> 
+ssh -i ~/Desktop/demo-docker1.pem ubuntu@3.110.77.40
+
+
+or 
+
+
+//direct go to instance and connect it
+
+
+
+//mysql command
+
+ubuntu@ip-172-31-38-241:~$ 
+sudo docker ps
+
+
+//output
+CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS          PORTS                                       NAMES
+3a2843b981d6   ubuntu_app     "/bin/sh -c 'exec ja…"   17 hours ago   Up 43 minutes   0.0.0.0:9090->8080/tcp, :::9090->8080/tcp   ubuntu_app_1
+dea83c4e39a9   mysql:8.0.27   "docker-entrypoint.s…"   17 hours ago   Up 49 minutes   3306/tcp, 33060/tcp                         ubuntu_db_1
+      
+
+ubuntu@ip-172-31-38-241:~$ 
+sudo docker exec -it de bash
+
+mysql> show databases;
+
+mysql> use airline;
+
+mysql> show tables;
+
+mysql> select * from user;
+
+mysql> desc user;
+
+mysql> update user set isadmin = 1 where user_id = 52;
+
+mysql> select * from user;
+      

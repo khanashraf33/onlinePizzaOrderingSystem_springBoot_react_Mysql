@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./BackEnd_pizza
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/latestpizza?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: D2_ashraf_69847
+      SPRING_DATASOURCE_PASSWORD: sunbeam
+    restart: always
+    depends_on:
+      - db
+    
+  db:
+    image: mysql:8.0.27
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: latestpizza
+      MYSQL_USER: D2_ashraf_69847
+      MYSQL_PASSWORD: sunbeam
+    volumes:
+      - ./data:/var/lib/mysql
+      
+      
+      
